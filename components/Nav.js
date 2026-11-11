@@ -1,15 +1,9 @@
 import Link from 'next/link';
-
-const links = [
-  ['/', 'Dashboard'], ['/holdings', 'Holdings'], ['/trades', 'Trades'],
-  ['/analytics', 'Analytics'], ['/notes', 'Notes'],
-];
-
-export default function Nav() {
-  return (
-    <nav className="nav">
-      <strong>InvestiTrack</strong>
-      {links.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
-    </nav>
-  );
+import { getSession } from '@/lib/auth';
+import LogoutButton from './LogoutButton';
+export default async function Nav() {
+ const s=await getSession();
+ return <nav className="nav"><strong>InvestiTrack</strong>{s ? <>
+ <Link href="/">Dashboard</Link><Link href="/holdings">Holdings</Link><Link href="/trades">Trades</Link><Link href="/analytics">Analytics</Link><Link href="/notes">Notes</Link>
+ {s.role==='ADMIN' && <Link href="/admin">Admin</Link>}<span>{s.role}</span><LogoutButton/></> : <Link href="/login">Login</Link>}</nav>;
 }
